@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
 
-  //   push prism
   //   login with prisma
   const user = await prisma.user.findUnique({ where: { email } });
 
