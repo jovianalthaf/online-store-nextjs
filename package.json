@@ -10,6 +10,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@prisma/client": "^6.10.1",
+    "mysql2": "^3.14.1",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -30,11 +32,9 @@
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.2",
     "lint-staged": "^16.1.2",
+    "prisma": "^6.10.1",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5"
-  },
-  "lint-staged": {
-    "**/*.{js,ts,jsx,tsx}": "eslint --fix"
   }
 }
