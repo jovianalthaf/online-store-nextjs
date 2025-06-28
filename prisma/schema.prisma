@@ -6,10 +6,24 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  admin
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) // 👈 auto increment ID
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(user) // 👈 enum Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
