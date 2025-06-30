@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
     const contact = await prisma.contact.findUnique({
       where: { id },
       select: { id: true, name: true, phone: true },

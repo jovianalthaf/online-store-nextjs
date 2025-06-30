@@ -61,3 +61,47 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function UPDATE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = await params;
+  const body = await req.json();
+  const { name, phone, updatedAt } = body;
+
+  const updateContact = await prisma.contact.update({
+    where: {
+      id: id,
+    },
+    data: {
+      name: name,
+      phone: phone,
+      updateAt: new Date(),
+    },
+  });
+
+  return NextResponse.json(
+    { message: "Update Contact Success", updateContact },
+    { status: 201 }
+  );
+}
+
+export const GET = async () => {
+  try {
+    const contacts = await prisma.contact.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    if (contacts.length === 0) {
+      return NextResponse.json({ message: "No Contact Data" }, { status: 404 });
+    }
+    return NextResponse.json(
+      { message: "All Contact Data", contacts },
+      { status: 200 }
+    );
+  } catch (error) {
+    throw new Error("Failed to Fetch Contact Data");
+  }
+};

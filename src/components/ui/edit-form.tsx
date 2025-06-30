@@ -39,7 +39,7 @@ const UpdateForm = ({ id }: { id: string }) => {
     fetchContact();
   }, [id]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -74,7 +74,7 @@ const UpdateForm = ({ id }: { id: string }) => {
   };
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleUpdate}>
         <div className="mb-5">
           <label
             htmlFor="name"
