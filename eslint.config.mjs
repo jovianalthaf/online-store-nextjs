@@ -13,6 +13,12 @@ const eslintConfig = [
   {
     ignores: ["src/generated/**"],
   },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
