@@ -54,9 +54,10 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json({
-      error: "Failed to create contact",
-      status: 500,
-    });
+    console.log(`Post Data Contact Error : ${error}`);
+    return NextResponse.json(
+      { message: "Terjadi kesalahan di server" },
+      { status: 500 }
+    );
   }
 }

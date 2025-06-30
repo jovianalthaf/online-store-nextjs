@@ -1,4 +1,3 @@
-
 import React from "react";
 import { getContacts } from "@/lib/data";
 import { formatDate } from "@/lib/util";
@@ -26,7 +25,7 @@ const ContactTable = async () => {
               {formatDate(contact.createdAt.toString())}
             </td>
             <td className="flex justify-center gap-1 py-3">
-              <EditButton /> <DeleteButton />
+              <EditButton id={contact.id} /> <DeleteButton />
             </td>
             <td></td>
           </tr>

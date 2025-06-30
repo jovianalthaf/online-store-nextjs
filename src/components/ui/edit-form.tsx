@@ -1,11 +1,11 @@
 "use client";
 
 import Input from "./Input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // ✅
 import { headers } from "@/lib/util";
 import { SubmitButton } from "@/components/ui/ButtonContact";
-const CreateForm = () => {
+const UpdateForm = ({ id }: { id: string }) => {
   const router = useRouter();
   const [isError, setIsError] = useState(false);
   const [contact, setContact] = useState({ name: "", phone: "" });
@@ -15,6 +15,29 @@ const CreateForm = () => {
   const [errors, setErrors] = useState<{ name?: string[]; phone?: string[] }>(
     {}
   );
+
+  useEffect(() => {
+    const fetchContact = async () => {
+      try {
+        const res = await fetch(`/api/contact/${id}`);
+        const json = await res.json();
+        console.log(json);
+        if (!res.ok) {
+          setMessage(json.message || "Gagal mengambil data");
+          return;
+        }
+        const contactData = json.data;
+        setContact({
+          name: contactData.name ?? "",
+          phone: contactData.phone ?? "",
+        });
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setMessage("Gagal Terhubung dengan server");
+      }
+    };
+    fetchContact();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,10 +134,10 @@ const CreateForm = () => {
             {message}
           </p>
         )}
-        <SubmitButton label="save" loading={loading} />
+        <SubmitButton label="update" loading={loading} />
       </form>
     </div>
   );
 };
 
-export default CreateForm;
+export default UpdateForm;
