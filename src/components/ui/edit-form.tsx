@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // ✅
 import { headers } from "@/lib/util";
 import { SubmitButton } from "@/components/ui/ButtonContact";
+import useSWR, { mutate } from "swr";
+
 const UpdateForm = ({ id }: { id: string }) => {
   const router = useRouter();
   const [isError, setIsError] = useState(false);
@@ -15,66 +17,62 @@ const UpdateForm = ({ id }: { id: string }) => {
   const [errors, setErrors] = useState<{ name?: string[]; phone?: string[] }>(
     {}
   );
-
-  useEffect(() => {
-    const fetchContact = async () => {
-      try {
-        const res = await fetch(`/api/contact/${id}`);
-        const json = await res.json();
-        console.log(json);
-        if (!res.ok) {
-          setMessage(json.message || "Gagal mengambil data");
-          return;
-        }
-        const contactData = json.data;
-        setContact({
-          name: contactData.name ?? "",
-          phone: contactData.phone ?? "",
-        });
-      } catch (error) {
-        console.error("Fetch error:", error);
-        setMessage("Gagal Terhubung dengan server");
+  const fetchContact = async () => {
+    try {
+      const res = await fetch(`/api/contact/${id}`);
+      const json = await res.json();
+      console.log(json);
+      if (!res.ok) {
+        setMessage(json.message || "Gagal mengambil data");
+        return;
       }
-    };
-    fetchContact();
-  }, [id]);
 
-  const handleUpdate = async (e: React.FormEvent) => {
+      mutate("/api/contact");
+      const contactData = json.data;
+      setContact({
+        name: contactData.name ?? "",
+        phone: contactData.phone ?? "",
+      });
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setMessage("Gagal Terhubung dengan server");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    const res = await fetch("/api/contact", {
-      method: "POST",
+    const res = await fetch(`/api/contact/${id}`, {
+      method: "PUT",
       body: JSON.stringify(contact),
       headers: headers(),
     });
     // console.log(res);
     const data = await res.json();
-
     if (res.ok) {
-      console.log("a");
-      setMessage(data.message || "Contact Saved Succesfully");
-      setContact({ name: "", phone: "" });
+      setMessage(data.message || "Berhasil Update Data Contact");
       setIsError(false);
-      router.push("/contact");
+      return;
     } else {
-      console.log("b");
-      setMessage(data.message || "Gagal Menyimpan Data");
+      setMessage(data.message || "Gagal Update Data Contact");
       setIsError(true);
-      setLoading(false);
-      // simpan error spesifik
       if (data.errors) {
         setErrors(data.errors);
       } else {
         setErrors({});
       }
     }
-    // console.log(isError);
-    setLoading(false);
+
+    // console.log("Berhasil Update");
   };
+
+  useEffect(() => {
+    fetchContact();
+  }, [id]);
+
   return (
     <div>
-      <form onSubmit={handleUpdate}>
+      <form onSubmit={handleSubmit}>
         <div className="mb-5">
           <label
             htmlFor="name"

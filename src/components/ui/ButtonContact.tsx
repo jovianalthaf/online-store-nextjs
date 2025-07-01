@@ -3,6 +3,12 @@
 import Link from "next/link";
 import { IoAddSharp, IoPencil, IoTrashOutline } from "react-icons/io5";
 import clsx from "clsx";
+
+type DeleteButtonProps = {
+  id: string;
+  onClick: (id: string) => void;
+};
+
 export const CreateButton = () => {
   return (
     <Link
@@ -26,14 +32,15 @@ export const EditButton = ({ id }: { id: string }) => {
   );
 };
 
-export const DeleteButton = () => {
+export const DeleteButton = ({ id, onClick, ...props }: DeleteButtonProps) => {
   return (
-    <Link
-      href="/contacts/create"
+    <button
+      onClick={() => onClick(id)}
       className="rounded-sm border p-1 hover:bg-gray-100"
+      {...props}
     >
       <IoTrashOutline size={20} />
-    </Link>
+    </button>
   );
 };
 

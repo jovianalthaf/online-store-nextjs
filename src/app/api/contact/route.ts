@@ -1,17 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-const ContactSchema = z.object({
-  name: z
-    .string()
-    .refine((val) => val.length > 0, { message: "Name wajib diisi" })
-    .refine((val) => val.length >= 6, { message: "Name minimal 6 karakter" }),
-  phone: z
-    .string()
-    .min(1, "Phone wajib diisi")
-    .min(1, "Phone minimal 11 karakter"),
-});
+import { ContactSchema } from "@/lib/util";
 
 export async function POST(req: NextRequest) {
   try {
@@ -30,8 +20,9 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
+      
       return NextResponse.json(
-        { message: "Ada Kesalahan", errors },
+        { message: "Validation Failed", errors },
         { status: 400 }
       );
     }
@@ -60,31 +51,6 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-export async function UPDATE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
-  const body = await req.json();
-  const { name, phone, updatedAt } = body;
-
-  const updateContact = await prisma.contact.update({
-    where: {
-      id: id,
-    },
-    data: {
-      name: name,
-      phone: phone,
-      updateAt: new Date(),
-    },
-  });
-
-  return NextResponse.json(
-    { message: "Update Contact Success", updateContact },
-    { status: 201 }
-  );
 }
 
 export const GET = async () => {
